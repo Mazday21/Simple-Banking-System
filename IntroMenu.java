@@ -84,7 +84,7 @@ public class IntroMenu {
         for (Map.Entry<Long, Integer> entry : cardNumPass.entrySet()) {
             if(cardN.equals(entry.getKey()) && cardP.equals(entry.getValue())) {
                 System.out.println("You have successfully logged in!");
-                InAcc.inAcc(entry.getKey());
+                inAcc(entry.getKey());
                 break;
             }
             else if(i == cardNumPass.size()) {
