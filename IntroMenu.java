@@ -3,15 +3,12 @@ package banking;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class IntroMenu {
     Scanner scanner = new Scanner(System.in);
-    Map<Long, Integer> cardsBalance = new HashMap<>();
-    Map<Long, Integer> cardNumPass = new HashMap<>();
-    long numberCard = 0;
-    int passCard = 0;
-    int balanceCard = 0;
-    int checksum = 9;
+    private final Map<Long, Integer> cardsBalance = new HashMap<>();
+    private final Map<Long, Integer> cardNumPass = new HashMap<>();
 
     void askCreateOrLog() {
         System.out.println("1. Create an account\n" +
@@ -26,27 +23,25 @@ public class IntroMenu {
             logInAcc();
         }
         else if(choice == 0){
-            System.out.println();
-            System.out.println("Bye!");
+            System.out.println("\nBye!");
             System.exit(0);
         }
-        else System.out.println();
-             System.out.println("Wrong choice");
-             System.out.println();
+        else System.out.println("\nWrong choice\n");
              askCreateOrLog();
     }
 
     String createCard() {
         cardNumPass.put(1L,1);
-        numberCard = 4000000000000000L + ((long)(Math.random()*1000000000L) * 10);   //create random cardnumber
+        long numberCard = 4000000000000000L + ((long) (Math.random() * 1000000000L) * 10);   //create random cardnumber
         for (Map.Entry<Long, Integer> entry : cardNumPass.entrySet()) {                                //check for matches
             if(numberCard == entry.getKey()){
                 numberCard = 4000000000000000L + ((long)(Math.random()*1000000000L) * 10);
             }
         }
-        checksum = luhnCheckNum(numberCard);
+        int checksum = luhnCheckNum(numberCard);
         numberCard = numberCard + checksum;
-        passCard = (int)(Math.random()*9999);
+        int passCard = ThreadLocalRandom.current().nextInt(9999);
+        int balanceCard = 0;
         cardsBalance.put(numberCard, balanceCard);
         cardNumPass.put(numberCard, passCard);
         return "\nYour card has been created\n" +
@@ -80,8 +75,7 @@ public class IntroMenu {
     }
 
     void logInAcc() {
-        System.out.println();
-        System.out.println("Enter your card number:");
+        System.out.println("\nEnter your card number:");
         Long cardN = scanner.nextLong();
         System.out.println("Enter your PIN:");
         Integer cardP = scanner.nextInt();
@@ -90,12 +84,11 @@ public class IntroMenu {
         for (Map.Entry<Long, Integer> entry : cardNumPass.entrySet()) {
             if(cardN.equals(entry.getKey()) && cardP.equals(entry.getValue())) {
                 System.out.println("You have successfully logged in!");
-                inAcc(entry.getKey());
+                InAcc.inAcc(entry.getKey());
                 break;
             }
             else if(i == cardNumPass.size()) {
-                System.out.println("Wrong card number or PIN!");
-                System.out.println();
+                System.out.println("Wrong card number or PIN!\n");
                 askCreateOrLog();
                 break;
             }
@@ -103,31 +96,26 @@ public class IntroMenu {
         }
     }
 
+
      void inAcc(long numberCard) {
-        System.out.println();
-        System.out.println("1. Balance\n" +
+        System.out.println("\n1. Balance\n" +
                 "2. Log out\n" +
                 "0. Exit");
         int check = scanner.nextInt();
         if(1 == check) {
-            System.out.println();
-            System.out.println(cardsBalance.get(numberCard));
+            System.out.println("\n" + cardsBalance.get(numberCard));
             inAcc(numberCard);
         }
         else if(2 == check) {
-            System.out.println();
-            System.out.println("You have successfully logged out!");
-            System.out.println();
+            System.out.println("\nYou have successfully logged out!\n");
             askCreateOrLog();
         }
         else if(0 == check) {
-            System.out.println();
-            System.out.println("Bye!");
+            System.out.println("\nBye!");
             System.exit(0);;
         }
-        else System.out.println();
-             System.out.println("Wrong choice");
-             System.out.println();
+        else System.out.println("\nWrong choice\n");
              inAcc(numberCard);
     }
+
 }
